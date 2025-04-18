@@ -1,7 +1,7 @@
 # Import the Package
 import os
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image
 import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -12,43 +12,27 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-color: #f0f2f6;
+        background-color: #1e1e1e;
+        color: #f5f5f5;
     }
     .st-header {
-        color: red;
-        padding: 1rem 0;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ff4c4c;
         text-align: center;
+        margin-bottom: 0.5rem;
     }
     .st-subheader {
-        color: red;
+        font-size: 1.5rem;
+        color: #ff4c4c;
         text-align: center;
         margin-bottom: 1rem;
     }
     .st-text {
-        color: #555;
-        margin-bottom: 0.5rem;
+        color: #cccccc;
+        font-size: 1.1rem;
         text-align: center;
-    }
-    .st-file-uploader {
-        background-color: #e6e6e6;
-        padding: 1rem;
-        border-radius: 5px;
-        margin-bottom: 1rem;
-    }
-    .st-button {
-        background-color: #1c83e1 !important;
-        color: white !important;
-        border-radius: 5px;
-        padding: 0.5rem 1rem !important;
-        font-weight: bold !important;
-    }
-    .st-button:hover {
-        background-color: #0e5caa !important;
-    }
-    .st-image {
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
     .st-success {
         background-color: #4CAF50 !important;
@@ -56,7 +40,7 @@ st.markdown(
         padding: 0.75rem;
         border-radius: 5px;
         text-align: center;
-        font-weight: bold !important;
+        font-weight: bold;
         margin-top: 1rem;
     }
     .st-error {
@@ -65,50 +49,52 @@ st.markdown(
         padding: 0.75rem;
         border-radius: 5px;
         text-align: center;
-        font-weight: bold !important;
+        font-weight: bold;
         margin-top: 1rem;
+    }
+    .css-1cpxqw2 edgvbvh3 { 
+        background-color: #2e2e2e; 
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
 # --- End Styling ---
 
-# Define the class names for the CIFAR-10 dataset
+# Class names for CIFAR-10 dataset
 class_name = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 
-# Create a function to load the saved model
+# Load the model
 @st.cache_data
 def load_my_model():
-    model = tf.keras.models.load_model("model.h5")
-    return model
+    return tf.keras.models.load_model("model.h5")
 
 model = load_my_model()
 
-# Create a red title and subtitle
-st.markdown("<h1 class='st-header'>Image Classification with CIFAR-10 Dataset</h1>", unsafe_allow_html=True)
-st.markdown("<h2 class='st-subheader'>Please Upload images related to the following categories:</h2>", unsafe_allow_html=True)
-st.markdown(f"<p class='st-text'>{', '.join(class_name)}</p>", unsafe_allow_html=True)
+# App Title & Subtitle
+st.markdown("<div class='st-header'>Image Classification with CIFAR-10 Dataset</div>", unsafe_allow_html=True)
+st.markdown("<div class='st-subheader'>Upload images from one of the following categories:</div>", unsafe_allow_html=True)
+st.markdown(f"<div class='st-text'>{', '.join(class_name)}</div>", unsafe_allow_html=True)
 
 # File uploader
 file = st.file_uploader("Upload the image", type=["jpg", "png"])
 
-# Function to process the image and predict the class
+# Prediction function
 def import_and_predict(image_data, model):
-    size = (32, 32)
-    image = image_data.resize(size, resample=Image.Resampling.LANCZOS)
+    image = image_data.resize((32, 32), resample=Image.Resampling.LANCZOS)
     img = np.asarray(image)
     img_reshape = img[np.newaxis, ...]
     prediction = model.predict(img_reshape)
     return prediction
 
-# Prediction logic
+# Prediction
 if st.button("Predict"):
     if file is not None:
         image = Image.open(file)
         st.image(image, use_column_width=True)
         predictions = import_and_predict(image, model)
-        result = f"<p class='st-success'>Image mostly matches: <strong>{class_name[np.argmax(predictions)]}</strong></p>"
+        result = f"<div class='st-success'>Image mostly matches: <strong>{class_name[np.argmax(predictions)]}</strong></div>"
         st.markdown(result, unsafe_allow_html=True)
     else:
-        st.markdown("<p class='st-error'>Please upload an image to classify.</p>", unsafe_allow_html=True)
+        st.markdown("<div class='st-error'>Please upload an image to classify.</div>", unsafe_allow_html=True)
