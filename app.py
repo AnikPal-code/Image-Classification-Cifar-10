@@ -15,13 +15,12 @@ st.markdown(
         background-color: #f0f2f6;
     }
     .st-header {
-        background-color: #1c83e1;
-        color: white;
+        color: red;
         padding: 1rem 0;
         text-align: center;
     }
     .st-subheader {
-        color: #333;
+        color: red;
         text-align: center;
         margin-bottom: 1rem;
     }
@@ -53,7 +52,7 @@ st.markdown(
     }
     .st-success {
         background-color: #4CAF50 !important;
-        color: white !important; /* Make text white */
+        color: white !important;
         padding: 0.75rem;
         border-radius: 5px;
         text-align: center;
@@ -78,7 +77,7 @@ st.markdown(
 # Define the class names for the CIFAR-10 dataset
 class_name = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 
-# Create a function to load the saved model (updated with st.cache_data)
+# Create a function to load the saved model
 @st.cache_data
 def load_my_model():
     model = tf.keras.models.load_model("model.h5")
@@ -86,31 +85,29 @@ def load_my_model():
 
 model = load_my_model()
 
-# Create a title for the web app
+# Create a red title and subtitle
 st.markdown("<h1 class='st-header'>Image Classification with CIFAR-10 Dataset</h1>", unsafe_allow_html=True)
 st.markdown("<h2 class='st-subheader'>Please Upload images related to the following categories:</h2>", unsafe_allow_html=True)
 st.markdown(f"<p class='st-text'>{', '.join(class_name)}</p>", unsafe_allow_html=True)
 
-# Create a file uploader for the user to upload an image (jpg or png)
+# File uploader
 file = st.file_uploader("Upload the image", type=["jpg", "png"])
 
-# Create a function to process the image and predict the class
+# Function to process the image and predict the class
 def import_and_predict(image_data, model):
     size = (32, 32)
-    # Resize the image and use resampling (LANCZOS)
     image = image_data.resize(size, resample=Image.Resampling.LANCZOS)
     img = np.asarray(image)
     img_reshape = img[np.newaxis, ...]
     prediction = model.predict(img_reshape)
     return prediction
 
-# Predict the class when the user clicks the "Predict" button
+# Prediction logic
 if st.button("Predict"):
     if file is not None:
         image = Image.open(file)
         st.image(image, use_column_width=True)
         predictions = import_and_predict(image, model)
-
         result = f"<p class='st-success'>Image mostly matches: <strong>{class_name[np.argmax(predictions)]}</strong></p>"
         st.markdown(result, unsafe_allow_html=True)
     else:
