@@ -1,5 +1,7 @@
 # Image-Classification-Cifar-10
 
+Streamlit Application link: https://image-classification-cifar-10-anikpal.streamlit.app/
+
 This is a simple web application built with Streamlit that allows users to upload an image and get real-time predictions using a deep learning model trained on the CIFAR-10 dataset. The model is able to classify images into 10 categories:
 airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck.
 
